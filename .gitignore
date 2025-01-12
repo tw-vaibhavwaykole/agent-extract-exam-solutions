@@ -1,1 +1,13 @@
+# Environment variables
 .env
+
+# Output directory
+output/
+output/*
+
+# Input directory
+input/
+input/*
+
+# Ignore all dot files/directories in output
+output/.*
