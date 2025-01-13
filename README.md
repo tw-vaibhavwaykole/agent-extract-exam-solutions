@@ -83,3 +83,156 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 ---
 
 Feel free to contribute or raise issues to enhance this project further!
+
+## Testing
+
+This project uses pytest for testing. Here are the different ways to run tests:
+
+### 1. Basic Testing
+
+Run all tests:
+```bash
+pytest src/tests/
+```
+
+Run a specific test file:
+```bash
+pytest src/tests/test_main.py
+```
+
+Run a specific test case:
+```bash
+pytest src/tests/test_main.py::TestAIAgent::test_basic_functionality
+```
+
+### 2. Testing with Coverage
+
+Run tests with coverage report:
+```bash
+pytest --cov=src src/tests/
+```
+
+Generate HTML coverage report:
+```bash
+pytest --cov=src --cov-report=html src/tests/
+```
+The HTML report will be available in `htmlcov/index.html`
+
+Generate XML coverage report (used by CI):
+```bash
+pytest --cov=src --cov-report=xml src/tests/
+```
+
+### 3. Verbose Testing
+
+Run tests with detailed output:
+```bash
+pytest -v src/tests/
+```
+
+Show print statements during tests:
+```bash
+pytest -s src/tests/
+```
+
+### 4. Running Tests Locally with Environment Variables
+
+```bash
+# Set up environment variables
+export OPENAI_API_KEY=your_api_key_here
+
+# Run tests
+pytest src/tests/
+```
+
+Or using a .env file:
+```bash
+# Create .env file if it doesn't exist
+cp .env.template .env
+
+# Edit .env with your API key
+# Then run tests
+pytest src/tests/
+```
+
+### 5. Development Testing
+
+Watch for changes and run tests automatically:
+```bash
+pytest-watch src/tests/
+```
+
+### 6. Code Quality Checks
+
+Run linting checks:
+```bash
+# Run flake8
+flake8 src/
+
+# Run black (code formatting)
+black --check src/
+
+# Run isort (import sorting)
+isort --check-only src/
+```
+
+Fix formatting issues:
+```bash
+# Apply black formatting
+black src/
+
+# Fix import sorting
+isort src/
+```
+
+### Test Structure
+
+```
+src/
+├── tests/
+│   ├── __init__.py
+│   ├── test_main.py
+│   └── conftest.py (if needed for fixtures)
+```
+
+### Continuous Integration
+
+Tests are automatically run on GitHub Actions:
+- On every push to main branch
+- On every pull request
+- Using multiple Python versions (3.8, 3.9, 3.10)
+- With code coverage reporting to Codecov
+
+You can view the test results:
+1. In the GitHub Actions tab
+2. In the pull request checks
+3. On Codecov for coverage reports
+
+### Adding New Tests
+
+1. Create test files in `src/tests/`
+2. Name test files with `test_` prefix
+3. Name test classes with `Test` prefix
+4. Name test methods with `test_` prefix
+
+Example:
+```python
+# src/tests/test_feature.py
+import unittest
+
+class TestNewFeature(unittest.TestCase):
+    def test_specific_functionality(self):
+        self.assertTrue(True)
+```
+
+## CI/CD
+
+This project uses GitHub Actions for continuous integration and deployment. The following checks are performed on each push and pull request:
+
+- Python tests on multiple Python versions (3.8, 3.9, 3.10)
+- Code coverage reporting
+- Code linting (flake8, black, isort)
+
+Status badges:
+![Tests](https://github.com/{username}/{repo-name}/workflows/Python%20Tests/badge.svg)
+![Linting](https://github.com/{username}/{repo-name}/workflows/Linting/badge.svg)
