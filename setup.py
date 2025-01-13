@@ -1,15 +1,19 @@
-from setuptools import setup, find_packages
 import os
+
+from setuptools import find_packages, setup
+
 
 # Read requirements from requirements.txt
 def read_requirements(filename="requirements.txt"):
     with open(filename) as f:
         return [line.strip() for line in f if line.strip() and not line.startswith("#")]
 
+
 # Read long description from README
 def read_long_description(filename="README.md"):
     with open(filename, "r", encoding="utf-8") as f:
         return f.read()
+
 
 setup(
     name="ai-exam-paper-generator",
