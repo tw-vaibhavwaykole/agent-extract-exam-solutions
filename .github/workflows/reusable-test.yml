@@ -4,7 +4,7 @@ on:
   workflow_call:
     secrets:
       CODECOV_TOKEN:
-        required: true
+        required: false
       OPENAI_API_KEY:
         required: true
 
@@ -39,5 +39,6 @@ jobs:
       
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
+        if: secrets.CODECOV_TOKEN != ''
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} 

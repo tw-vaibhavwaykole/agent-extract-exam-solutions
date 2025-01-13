@@ -22,6 +22,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 black isort
     
+    - name: Format code
+      run: |
+        black .
+        isort .
+    
     - name: Run linters
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -29,4 +34,12 @@ jobs:
         # check code formatting
         black --check .
         # check import sorting
-        isort --check-only . 
+        isort --check-only .
+    
+    - name: Commit changes
+      if: github.event_name == 'pull_request'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add -A
+        git diff-index --quiet HEAD || git commit -m "style: format code with black and isort" && git push 

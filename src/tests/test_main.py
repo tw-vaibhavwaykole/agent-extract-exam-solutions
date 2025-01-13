@@ -7,6 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from main import *  # Import your main functions here
 
+
 class TestAIAgent(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures before each test method."""
@@ -23,8 +24,9 @@ class TestAIAgent(unittest.TestCase):
 
     def test_data_loading(self):
         """Test if data is loaded correctly."""
-        input_file = 'data/input/all-question-papers.txt'
+        input_file = "data/input/all-question-papers.txt"
         self.assertTrue(os.path.exists(input_file))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main() 

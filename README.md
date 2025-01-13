@@ -27,6 +27,13 @@ This project is designed to help generate answer papers for questions in LLM exa
    pip install -r requirements.txt
    ```
 
+   To generate a full list of installed dependencies (useful for debugging):
+   ```bash
+   pip freeze > requirements_full.txt
+   ```
+
+   Note: requirements_full.txt is git-ignored and should not be committed.
+
 3. **Configure OpenAI API Key**:
    - Copy the template file to create your `.env`:
      ```bash
@@ -236,3 +243,18 @@ This project uses GitHub Actions for continuous integration and deployment. The 
 Status badges:
 ![Tests](https://github.com/{username}/{repo-name}/workflows/Python%20Tests/badge.svg)
 ![Linting](https://github.com/{username}/{repo-name}/workflows/Linting/badge.svg)
+
+## Code Formatting
+
+Format and check your code:
+
+```bash
+# Format code
+black .
+isort .
+
+# Check formatting
+black --check .
+isort --check-only .
+flake8 .
+```
