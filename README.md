@@ -27,6 +27,11 @@ This project is designed to help generate answer papers for questions in LLM exa
    pip install -r requirements.txt
    ```
 
+   For development, install additional dependencies:
+   ```bash
+   pip install -r requirements-dev.txt
+   ```
+
    To generate a full list of installed dependencies (useful for debugging):
    ```bash
    pip freeze > requirements_full.txt

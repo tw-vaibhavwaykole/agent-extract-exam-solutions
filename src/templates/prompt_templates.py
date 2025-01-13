@@ -1,5 +1,6 @@
 from langchain.prompts import PromptTemplate
 
+
 def get_expert_answer_prompt() -> PromptTemplate:
     template = """
 Role: You are a seasoned law professor specializing in Contract Law and case Law in India.
@@ -64,8 +65,9 @@ DO NOT STOP UNTIL THE CONCLUSION IS WRITTEN.
 """
     return PromptTemplate(
         input_variables=["question", "marks", "target_length", "subject"],
-        template=template
+        template=template,
     )
+
 
 def get_answer_format_instructions() -> str:
     """
@@ -78,6 +80,7 @@ Use bullet points or numbering if it helps clarity.
 Include relevant case laws and pinpoint citations where possible.
 Conclude with a definitive closing paragraph that summarizes the answer.
 """
+
 
 # Update the prompt template to encourage complete, detailed answers
 ANSWER_PROMPT = """
@@ -99,6 +102,7 @@ Your answer should be well-structured and cover all aspects of the question with
 Answer:
 """
 
+
 def validate_answer_completeness(answer: str, marks: int) -> bool:
     """
     Validates if the answer meets all completeness criteria
@@ -108,65 +112,85 @@ def validate_answer_completeness(answer: str, marks: int) -> bool:
     has_introduction = any(["**Introduction:**" in answer, "**Definition:**" in answer])
     has_main_content = "**Main Content:**" in answer if marks > 5 else True
     has_conclusion = "**Conclusion:**" in answer
-    
+
     # Word count check
     min_words = 400 if marks > 5 else 150
     word_count = len(answer.split())
     meets_word_count = word_count >= min_words
-    
+
     # Case law check
     required_cases = 2 if marks > 5 else 1
     case_count = len([x for x in answer.split() if "v." in x or "vs." in x])
     has_required_cases = case_count >= required_cases
-    
+
     # Check for incomplete sections
-    has_incomplete = any([
-        "..." in answer,
-        answer.strip().endswith((".", ",")),
-        len(answer.strip().split("\n")[-1]) < 20  # Last line too short
-    ])
-    
-    return all([
-        has_introduction,
-        has_main_content,
-        has_conclusion,
-        meets_word_count,
-        has_required_cases,
-        not has_incomplete
-    ])
+    has_incomplete = any(
+        [
+            "..." in answer,
+            answer.strip().endswith((".", ",")),
+            len(answer.strip().split("\n")[-1]) < 20,  # Last line too short
+        ]
+    )
+
+    return all(
+        [
+            has_introduction,
+            has_main_content,
+            has_conclusion,
+            meets_word_count,
+            has_required_cases,
+            not has_incomplete,
+        ]
+    )
+
 
 def format_answer(answer: str) -> str:
     """
     Formats the answer with consistent styling
     """
     formatted = answer.strip()
-    
+
     # Add bold formatting to section headers
     sections = [
-        "Introduction:", "Main Content:", "Conclusion:",
-        "Definition:", "Types:", "Features:", "Analysis:"
+        "Introduction:",
+        "Main Content:",
+        "Conclusion:",
+        "Definition:",
+        "Types:",
+        "Features:",
+        "Analysis:",
     ]
     for section in sections:
         formatted = formatted.replace(section, f"**{section}**")
-    
+
     # Ensure proper spacing
     formatted = formatted.replace("\n\n\n", "\n\n")
-    
+
     # Add horizontal line before conclusion
     if "**Conclusion:**" in formatted:
         formatted = formatted.replace("**Conclusion:**", "\n---\n**Conclusion:**")
-    
+
     # Format case law citations
     import re
-    case_pattern = r'([A-Z][a-z]+ v\.? [A-Z][a-z]+)'
-    formatted = re.sub(case_pattern, r'*\1*', formatted)
-    
+
+    case_pattern = r"([A-Z][a-z]+ v\.? [A-Z][a-z]+)"
+    formatted = re.sub(case_pattern, r"*\1*", formatted)
+
     return formatted
 
-def generate_complete_answer(llm, prompt: str, subject: str, section: str, question: str, marks: int, max_retries: int = 3) -> str:
+
+def generate_complete_answer(
+    llm,
+    prompt: str,
+    subject: str,
+    section: str,
+    question: str,
+    marks: int,
+    max_retries: int = 3,
+) -> str:
     """
     Generates an answer and retries if incomplete
-    
+
     Args:
         llm: Language model instance
         prompt: Base prompt template
@@ -175,80 +199,88 @@ def generate_complete_answer(llm, prompt: str, subject: str, section: str, quest
         question: The question text
         marks: Number of marks for the question
         max_retries: Maximum number of retry attempts
-        
+
     Returns:
         str: Formatted complete answer
     """
     prompt_template = PromptTemplate(
-        input_variables=["subject", "section", "question", "marks"],
-        template=prompt
+        input_variables=["subject", "section", "question", "marks"], template=prompt
     )
-    
+
     for attempt in range(max_retries):
         # Generate prompt with all required variables
         full_prompt = prompt_template.format(
-            subject=subject,
-            section=section,
-            question=question,
-            marks=marks
+            subject=subject, section=section, question=question, marks=marks
         )
-        
+
         answer = llm.generate(full_prompt)
         formatted_answer = format_answer(answer)
-        
+
         if validate_answer_completeness(formatted_answer, marks):
             return formatted_answer
-            
+
         # If incomplete, modify prompt to emphasize completion
         full_prompt += "\n\nIMPORTANT: Your previous response was incomplete. Please provide a COMPLETE answer with all required sections and a proper conclusion."
-    
+
     raise Exception("Failed to generate complete answer after maximum retries")
+
 
 def extract_question_metadata(question_text: str) -> dict:
     """
     Extracts metadata from question text
     """
     import re
-    
+
     # Fix the regex patterns to handle both bold and non-bold text
-    subject_match = re.search(r'Subject:\s*(?:\*\*)?(.*?)(?:\*\*)?(?=\n|Section)', question_text, re.IGNORECASE)
+    subject_match = re.search(
+        r"Subject:\s*(?:\*\*)?(.*?)(?:\*\*)?(?=\n|Section)",
+        question_text,
+        re.IGNORECASE,
+    )
     subject = subject_match.group(1).strip() if subject_match else "General"
-    
-    section_match = re.search(r'Section:\s*(?:\*\*)?(.*?)(?:\*\*)?(?=\n|Question)', question_text, re.IGNORECASE)
+
+    section_match = re.search(
+        r"Section:\s*(?:\*\*)?(.*?)(?:\*\*)?(?=\n|Question)",
+        question_text,
+        re.IGNORECASE,
+    )
     section = section_match.group(1).strip() if section_match else "General"
-    
+
     # Keep existing patterns
-    marks_match = re.search(r'Question\s*\((\d+)\s*marks\)', question_text)
+    marks_match = re.search(r"Question\s*\((\d+)\s*marks\)", question_text)
     marks = int(marks_match.group(1)) if marks_match else 0
-    
-    question_match = re.search(r'Question.*?:\s*(.*?)(?=Answer:|$)', question_text, re.DOTALL)
+
+    question_match = re.search(
+        r"Question.*?:\s*(.*?)(?=Answer:|$)", question_text, re.DOTALL
+    )
     question = question_match.group(1).strip() if question_match else ""
-    
+
     return {
         "subject": subject,
         "section": section,
         "marks": marks,
-        "question": question
+        "question": question,
     }
+
 
 def process_question(llm, question_text: str) -> str:
     """
     Process a question and generate a complete answer
-    
+
     Args:
         llm: Language model instance
         question_text: Full question text
-        
+
     Returns:
         str: Formatted complete answer
     """
     try:
         # Extract metadata from question
         metadata = extract_question_metadata(question_text)
-        
+
         # Get the expert answer prompt template
         prompt = get_expert_answer_prompt().template
-        
+
         # Generate complete answer with retries
         answer = generate_complete_answer(
             llm=llm,
@@ -256,10 +288,10 @@ def process_question(llm, question_text: str) -> str:
             subject=metadata["subject"],
             section=metadata["section"],
             question=metadata["question"],
-            marks=metadata["marks"]
+            marks=metadata["marks"],
         )
-        
+
         return answer
-        
+
     except Exception as e:
         return f"Error processing question: {str(e)}"

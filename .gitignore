@@ -31,3 +31,5 @@ htmlcov/
 
 # Python environment files
 requirements_full.txt
+.venv/
+venv/
