@@ -28,11 +28,16 @@ This project is designed to help generate answer papers for questions in LLM exa
    ```
 
 3. **Configure OpenAI API Key**:
-   - Create a `.env` file in the project root directory.
-   - Add your OpenAI API key to the `.env` file:
+   - Copy the template file to create your `.env`:
+     ```bash
+     cp .env.template .env
+     ```
+   - Update the `.env` file with your OpenAI API key:
      ```
      OPENAI_API_KEY=your_openai_api_key_here
      ```
+
+   > Note: Any changes to your local `.env` file will be ignored by Git, keeping your API key safe.
 
 4. **Run the Script**:
    - Provide the input file path in the script.

@@ -2,6 +2,9 @@
 .env
 __pycache__/
 
+# But allow template file
+!.env.template
+
 # Output directory
 output/
 output/*
