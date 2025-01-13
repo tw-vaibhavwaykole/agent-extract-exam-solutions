@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from typing import List
-from models.question import Question
+from src.models.question import Question
 
 class FileService:
     def __init__(self, output_dir: str):

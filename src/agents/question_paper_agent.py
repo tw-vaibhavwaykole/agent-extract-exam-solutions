@@ -4,21 +4,21 @@ from typing import List, Dict
 from datetime import datetime
 from PyPDF2 import PdfReader
 from langchain_openai import OpenAI
-from prompt_templates import get_expert_answer_prompt
-from config import AppConfig
-from models.question import Question
-from services.file_service import FileService
-from services.question_parser import QuestionParser
+from src.templates.prompt_templates import get_expert_answer_prompt
+from src.config.settings import load_config
+from src.models.question import Question
+from src.services.file_service import FileService
+from src.services.question_parser import QuestionParser
 
 class QuestionPaperAgent:
-    def __init__(self, *, config: AppConfig):
+    def __init__(self, config):
         self.config = config
-        if not self.config.api_key:
+        if not self.config.get('openai_api_key'):
             raise ValueError("OpenAI API key is required")
         
-        self.llm = OpenAI(api_key=self.config.api_key)
+        self.llm = OpenAI(api_key=self.config['openai_api_key'])
         self.answer_prompt = get_expert_answer_prompt()
-        self.file_service = FileService(config.output_dir)
+        self.file_service = FileService(config['output_dir'])
         self.parser = QuestionParser()
         
     def get_questions(self) -> List[Question]:
@@ -29,10 +29,31 @@ class QuestionPaperAgent:
     def read_input_file(self) -> str:
         """Read content from input file"""
         try:
-            with open(self.config.txt_file_path, 'r', encoding='utf-8') as f:
+            input_path = os.path.join(self.config['input_dir'], self.config['input_file'])
+            with open(input_path, 'r', encoding='utf-8') as f:
                 return f.read()
         except FileNotFoundError:
-            raise FileNotFoundError(f"Input file not found: {self.config.txt_file_path}")
+            # Create example input file if it doesn't exist
+            self.create_example_input_file(input_path)
+            raise FileNotFoundError(
+                f"\nInput file not found: {input_path}\n"
+                f"An example input file has been created at this location.\n"
+                f"Please update it with your questions and run the program again."
+            )
+    
+    def create_example_input_file(self, input_path: str) -> None:
+        """Create an example input file with template"""
+        os.makedirs(os.path.dirname(input_path), exist_ok=True)
+        example_content = """Subject: Contract Law
+Section: Unit 1
+Question (5 marks): Define consideration and explain its essential elements.
+
+Subject: Constitutional Law
+Section: Fundamental Rights
+Question (10 marks): Explain the concept of Right to Equality under Article 14 of Indian Constitution.
+"""
+        with open(input_path, 'w', encoding='utf-8') as f:
+            f.write(example_content)
     
     def process_single_question(self, question: Question, question_num: int) -> None:
         """Process and save a single question"""
@@ -101,11 +122,11 @@ class QuestionPaperAgent:
 
     def save_results(self, results: List[Dict]) -> str:
         """Save results to output file"""
-        if not os.path.exists(self.config.output_dir):
-            os.makedirs(self.config.output_dir)
+        if not os.path.exists(self.config['output_dir']):
+            os.makedirs(self.config['output_dir'])
             
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_file = os.path.join(self.config.output_dir, f"answers_{timestamp}.txt")
+        output_file = os.path.join(self.config['output_dir'], f"answers_{timestamp}.txt")
         
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write("LEGAL EXAM ANSWERS\n")

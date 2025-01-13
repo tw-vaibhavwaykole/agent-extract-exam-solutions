@@ -39,14 +39,21 @@ This project is designed to help generate answer papers for questions in LLM exa
 
    > Note: Any changes to your local `.env` file will be ignored by Git, keeping your API key safe.
 
-4. **Run the Script**:
-   - Provide the input file path in the script.
-   - Run the main script to generate answers:
-     ```bash
-     python main.py
+4. **Prepare Input File**:
+   - Place your question paper in `data/input/all-question-papers.txt`
+   - Or set custom input file name in `.env`:
      ```
+     INPUT_FILE=your-questions.txt
+     ```
+   - If no input file exists, an example template will be created automatically
 
-5. **View Outputs**:
+5. **Run the Script**:
+   ```bash
+   python main.py
+   ```
+   - Generated answers will be saved in `data/output/`
+
+6. **View Outputs**:
    - Generated answers will be saved in the specified output file.
    - Refer to the dummy output file (`dummy_output.txt`) for the expected format.
 

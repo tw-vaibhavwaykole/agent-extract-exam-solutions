@@ -2,9 +2,10 @@ from dotenv import load_dotenv
 import signal
 import sys
 import os
-from config import AppConfig
-from question_paper_agent import QuestionPaperAgent
-from models.question import Question
+from src.agents.question_paper_agent import QuestionPaperAgent
+from src.services.question_parser import QuestionParser
+from src.config.settings import load_config
+from src.models.question import Question
 from typing import List
 
 # Add the config directory to the Python path
@@ -50,13 +51,18 @@ def get_user_confirmation() -> bool:
 
 def main():
     load_dotenv()
-    config = AppConfig()
+    config = load_config()
     graceful_exit = GracefulExit()
     
     try:
-        agent = QuestionPaperAgent(config=config)
-        questions = agent.get_questions()
+        agent = QuestionPaperAgent(config)
         
+        try:
+            questions = agent.get_questions()
+        except FileNotFoundError as e:
+            print(e)
+            sys.exit(1)
+            
         display_questions(questions)
         print(f"\nTotal questions found: {len(questions)}")
         

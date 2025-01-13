@@ -5,13 +5,26 @@ __pycache__/
 # But allow template file
 !.env.template
 
-# Output directory
-output/
-output/*
-
-# Input directory
-input/
+# Old directory structure (can be removed later)
 input/*
+!input/all-question-papers.txt
+output/*
+!output/.gitkeep
 
-# Ignore all dot files/directories in output
-output/.*
+# New directory structure
+data/output/*
+!data/output/.gitkeep
+data/input/*
+!data/input/.gitkeep
+!data/input/all-question-papers.txt
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/

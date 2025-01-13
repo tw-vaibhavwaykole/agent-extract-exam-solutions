@@ -1,6 +1,6 @@
 import re
 from typing import List
-from models.question import Question
+from src.models.question import Question
 
 class QuestionParser:
     def __init__(self):
