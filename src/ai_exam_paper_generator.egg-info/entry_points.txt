@@ -1,0 +1,2 @@
+[console_scripts]
+exam-generator = main:main
