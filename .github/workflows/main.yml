@@ -1,4 +1,4 @@
-name: CI
+name: Build and Deploy
 
 on:
   push:
@@ -7,9 +7,19 @@ on:
     branches: [ main ]
 
 jobs:
-  pipeline:
+  lint:
+    uses: ./.github/workflows/linting.yml
+
+  build:
+    needs: lint
     uses: ./.github/workflows/reusable-build.yml
     secrets:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+  
+  test:
+    needs: build
+    uses: ./.github/workflows/python-tests.yml
+    secrets:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
