@@ -1,10 +1,14 @@
 from dotenv import load_dotenv
 import signal
 import sys
+import os
 from config import AppConfig
 from question_paper_agent import QuestionPaperAgent
 from models.question import Question
 from typing import List
+
+# Add the config directory to the Python path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'config'))
 
 class GracefulExit:
     def __init__(self):

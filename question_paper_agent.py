@@ -4,7 +4,7 @@ from typing import List, Dict
 from datetime import datetime
 from PyPDF2 import PdfReader
 from langchain_openai import OpenAI
-from src.utils.prompt_templates import get_expert_answer_prompt
+from prompt_templates import get_expert_answer_prompt
 from config import AppConfig
 from models.question import Question
 from services.file_service import FileService
