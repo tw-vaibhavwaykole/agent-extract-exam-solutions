@@ -6,8 +6,9 @@ from unittest.mock import Mock, patch
 # Add the parent directory to system path to import main
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+
 class TestAIAgent(unittest.TestCase):
-    @patch('langchain_openai.OpenAI')
+    @patch("langchain_openai.OpenAI")
     def setUp(self, mock_openai):
         """Set up test fixtures before each test method."""
         # Mock OpenAI to prevent actual API calls during tests
