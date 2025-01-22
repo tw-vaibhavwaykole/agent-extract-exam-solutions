@@ -11,8 +11,8 @@ This project is designed to help generate answer papers for questions in LLM exa
 ## Setup Instructions
 
 ### Prerequisites
-- Python installed on your system.
-- OpenAI API key.
+- Python 3.9 installed on your system
+- OpenAI API key
 
 ### Steps
 1. **Clone the Repository**:
@@ -21,37 +21,46 @@ This project is designed to help generate answer papers for questions in LLM exa
    cd agent-extract-exam-solutions
    ```
 
-2. **Install Dependencies**:
-   Install the required Python libraries using:
+2. **Create and Activate Virtual Environment**:
    ```bash
+   # Create virtual environment
+   python3 -m venv venv
+
+   # Activate virtual environment
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
+   ```
+
+3. **Install Dependencies**:
+   With virtual environment activated, install the required Python libraries:
+   ```bash
+   # Install main dependencies
    pip install -r requirements.txt
-   ```
 
-   For development, install additional dependencies:
-   ```bash
+   # For development, install additional dependencies
    pip install -r requirements-dev.txt
-   ```
 
-   To generate a full list of installed dependencies (useful for debugging):
-   ```bash
+   # To generate a full list of installed dependencies (useful for debugging):
    pip freeze > requirements_full.txt
    ```
 
    Note: requirements_full.txt is git-ignored and should not be committed.
 
-3. **Configure OpenAI API Key**:
-   - Copy the template file to create your `.env`:
-     ```bash
-     cp .env.template .env
-     ```
-   - Update the `.env` file with your OpenAI API key:
-     ```
-     OPENAI_API_KEY=your_openai_api_key_here
-     ```
+4. **Configure OpenAI API Key**:
+   ```bash
+   # Copy the template file to create your .env
+   cp .env.template .env
+
+   # Update the .env file with your OpenAI API key
+   # Edit .env and add:
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
 
    > Note: Any changes to your local `.env` file will be ignored by Git, keeping your API key safe.
 
-4. **Prepare Input File**:
+5. **Prepare Input File**:
    - Place your question paper in `data/input/all-question-papers.txt`
    - Or set custom input file name in `.env`:
      ```
@@ -59,13 +68,20 @@ This project is designed to help generate answer papers for questions in LLM exa
      ```
    - If no input file exists, an example template will be created automatically
 
-5. **Run the Script**:
+6. **Run the Application**:
    ```bash
-   python main.py
+   # Ensure virtual environment is activated
+   python3 main.py
    ```
-   - Generated answers will be saved in `data/output/`
+   Generated answers will be saved in `data/output/`
 
-6. **View Outputs**:
+7. **Deactivate Virtual Environment**:
+   When you're done, you can deactivate the virtual environment:
+   ```bash
+   deactivate
+   ```
+
+8. **View Outputs**:
    - Generated answers will be saved in the specified output file.
    - Refer to the dummy output file (`dummy_output.txt`) for the expected format.
 
