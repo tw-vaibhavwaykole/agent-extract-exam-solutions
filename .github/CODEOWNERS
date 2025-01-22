@@ -1,0 +1,15 @@
+# These owners will be the default owners for everything in
+# the repo. Unless a later match takes precedence,
+# @tw-vaibhavwaykole will be requested for review when someone 
+# opens a pull request.
+*       @tw-vaibhavwaykole
+
+# Specific ownership for different directories/files
+/src/   @tw-vaibhavwaykole
+/.github/   @tw-vaibhavwaykole
+/tests/     @tw-vaibhavwaykole
+
+# Specific file ownership
+*.py    @tw-vaibhavwaykole
+*.yml   @tw-vaibhavwaykole
+*.md    @tw-vaibhavwaykole 
